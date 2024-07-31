@@ -5,3 +5,25 @@
 #root{
     height: 100vh;
 }
+.card-shadow{
+    box-shadow: 0 4px 6px rgba(54, 78, 126, .102);
+}
+.card-shadow:hover p:nth-child(1){
+    color: #635fc7;
+}
+::-webkit-scrollbar {
+    width: 2px;
+    height: 4px;
+}
+  ::-webkit-scrollbar-track {
+    background: #F4F7FD;
+}
+  ::-webkit-scrollbar-thumb {
+    background:#635fc7;
+    border-radius: 5px;
+;
+}
+  ::-webkit-scrollbar-thumb:hover {
+    background: #635fc7 ;
+    cursor: pointer;
+}
