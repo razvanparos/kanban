@@ -4,7 +4,7 @@ import Header from './Components/Header';
 import Main from './Components/Main';
 
 function App() {
-  let boards =[
+  const [boards, setBoards]=useState([
     {
       boardName:"Platform Launch",
       columns:[
@@ -97,15 +97,19 @@ function App() {
         },
       ],
     }
-  ];
+  ]);
   const [board, setBoard] = useState(boards[0].boardName)
   const switchBoard=(i)=>{
     setBoard(boards[i].boardName)
   }
+  const updateBoards=(newBoard)=>{
+    let newBoards = [...boards, newBoard]
+    setBoards(newBoards)
+  }
   return (
     <div className="App h-full">
       <Header board={board}/>
-      <Main boards={boards} switchBoard={switchBoard}/>
+      <Main boards={boards} switchBoard={switchBoard} updateBoards={updateBoards}/>
     </div>
   );
 }
