@@ -2,6 +2,7 @@ import {useEffect, useState } from "react";
 import boardIcon from "../Assets/icon-board.29b48f5174742b4dd3a04f52d710293c.svg"
 import hideIcon from "../Assets/icon-hide-sidebar.0e2c68ccd652fb10d8ba0c0c7f3a2f60.svg"
 import showIcon from "../Assets/icon-show-sidebar.b186c9a8e4a2e4d7d83e0676d3e128fc.svg"
+import x from '../Assets/icon-cross.d4ca9e0d2a82f7ea4ae08238a42f84ed.svg'
 
 function Main(props) {
   const [newBoard, setNewBoard] = useState({
@@ -68,6 +69,14 @@ function Main(props) {
     setNewBoard((prevBoard) => {
       let updatedColumns = [...prevBoard.columns, {columnName:''}]
       return { ...prevBoard, columns: updatedColumns};
+    });
+  }
+
+  const handleRemoveColumn=(index)=>{
+    console.log(index)
+    setNewBoard((prevBoard) => {
+      const updatedColumns = prevBoard.columns.filter((c,i)=>i!=index)
+      return { ...prevBoard, columns: updatedColumns };
     });
   }
 
@@ -149,7 +158,10 @@ function Main(props) {
             <div className="flex flex-col gap-2">
               <p className="font-bold text-asd text-xs tracking-widest">Board Columns</p>
               {newBoard.columns.map((c,i)=>{
-                return <input key={i} type="text" value={c.columnName} onChange={(e)=>{handleColumnNameChange(i, e.target.value)}} className="placeholder:text-sm border-[1px] w-full p-2 rounded-md"/>
+                return <div className="flex items-center" key={i}>
+                    <input type="text" value={c.columnName} onChange={(e)=>{handleColumnNameChange(i, e.target.value)}} className="placeholder:text-sm border-[1px] w-full p-2 rounded-md"/>
+                    <img src={x} onClick={()=>{handleRemoveColumn(i)}} alt="" className="h-full ml-2 cursor-pointer"/>
+                </div>
               })}
             </div>
             <p className="text-red-600 font-bold">{errorMsg}</p>
