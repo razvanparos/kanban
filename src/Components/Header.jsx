@@ -12,7 +12,7 @@ function Header(props) {
             <div className="flex gap-x-6 items-center">
                 <button className="bg-purple 
                  text-white p-3 rounded-full font-semibold 
-                 px-6 hover:opacity-75 duration-300">+ Add New Task</button>
+                 px-6 hover:opacity-75 duration-300" onClick={()=>{props.taskModalStatus(true)}}>+ Add New Task</button>
                 <img src={dots} alt="" className="h-full cursor-pointer"/>
             </div>
         </div>

@@ -16,10 +16,30 @@ function Main(props) {
         },
       ],
   });
+
+  const [newTask, setNewTask] = useState(
+    {
+      taskName:'',
+      taskColumn:'',
+      subtasks:[
+        {
+          subtaskName:'',
+          subtaskDone:false
+        },
+        {
+          subtaskName:'',
+          subtaskDone:false
+        },
+      ]
+    }
+  );
   const [activeBoard, setActiveBoard] = useState(0);
   const [showSidebar, setSidebar] = useState(true);
   const [createBoardModal, setCreateBoardModal] = useState(false);
+  const [editBoardModal, setEditBoardModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [copyCurrentBoard, setCopyCurrentBoard] = useState(props.boards[activeBoard]);
+  
   const boardClick=(i)=>{
     setActiveBoard(i)
     props.switchBoard(i)
@@ -40,6 +60,11 @@ function Main(props) {
       return { ...prevBoard, boardName: value };
     })
   }
+  const editNewTaskName=(value)=>{
+    setNewTask((prevBoard)=>{
+      return { ...prevBoard, taskName: value };
+    })
+  }
   const handleAddBoard=()=>{
     if(newBoard.boardName===''){
       setErrorMsg('All fields are required')
@@ -53,17 +78,6 @@ function Main(props) {
     } 
     props.updateBoards(newBoard);
     setCreateBoardModal(false)
-    setNewBoard({
-      boardName:"",
-        columns:[
-          {
-            columnName:'Todo',
-          },
-          {
-            columnName:'Doing',
-          },
-        ],
-    });
   }
   const handleAddNewColumn=()=>{
     setNewBoard((prevBoard) => {
@@ -73,13 +87,93 @@ function Main(props) {
   }
 
   const handleRemoveColumn=(index)=>{
-    console.log(index)
     setNewBoard((prevBoard) => {
       const updatedColumns = prevBoard.columns.filter((c,i)=>i!=index)
       return { ...prevBoard, columns: updatedColumns };
     });
   }
+  const editBoardName=(val)=>{
+    setCopyCurrentBoard((prevBoard)=>{
+      return { ...prevBoard, boardName: val };
+    })
+  }
+  const handleColumnNameEdit=(i, val)=>{
+    setCopyCurrentBoard((prevBoard)=>{
+        const updatedColumns = prevBoard.columns.map((c,idx)=>
+            idx===i ?{...c, columnName:val}: c)
+        return {...prevBoard, columns:updatedColumns}
+    })
+  }
+  const handleSubtaskNameEdit=(i, val)=>{
+    setNewTask((prevTask)=>{
+        const updatedTask = prevTask.subtasks.map((s,idx)=>
+            idx===i ?{...s, subtaskName:val}: s)
+        return {...prevTask, subtasks:updatedTask}
+    })
+  }
+  const handleRemoveEditColumn=(i)=>{
+    setCopyCurrentBoard((prevBoard)=>{
+        const updatedColumns = prevBoard.columns.filter((c,idx)=>idx!=i)
+        return {...prevBoard, columns:updatedColumns}
+    })
+  }
+  const handleRemoveSubtask=(i)=>{
+    setNewTask((prevTask)=>{
+        const updatedTask = prevTask.subtasks.filter((c,idx)=>idx!=i)
+        return {...prevTask, subtasks:updatedTask}
+    })
+  }
+  const handleAddNewEditColumn=()=>{
+    setCopyCurrentBoard((prevBoard) => {
+      let updatedColumns = [...prevBoard.columns, {columnName:''}]
+      return { ...prevBoard, columns: updatedColumns};
+    });
+  }
+  const handleAddSubtask=()=>{
+    setNewTask((prevTask) => {
+      let updatedTasks = [...prevTask.subtasks, {subtaskName:'', subtaskDone:false}]
+      return { ...prevTask, subtasks: updatedTasks};
+    });
+  }
 
+  const handleSaveEditBoard=()=>{
+    if(copyCurrentBoard.boardName===''){
+      setErrorMsg('All fields are required')
+      return
+    }else{setErrorMsg('')}
+    for(let i=0;i<copyCurrentBoard.columns.length;i++){
+      if(copyCurrentBoard.columns[i].columnName===''){
+        setErrorMsg('All fields are required')
+        return
+      }else{setErrorMsg('')}
+    } 
+    props.updateEditBoards(copyCurrentBoard,activeBoard);
+    setEditBoardModal(false)
+  }
+  const handleCreateTask=()=>{
+    if(newTask.taskName===''){
+      setErrorMsg('All fields are required')
+      return
+    }else{setErrorMsg('')}
+    for(let i=0;i<newTask.subtasks.length;i++){
+      if(newTask.subtasks[i].subtaskName===''){
+        setErrorMsg('All fields are required')
+        return
+      }else{setErrorMsg('')}
+    } 
+    if(newTask.taskColumn==='-1'|| !newTask.taskColumn){
+      setErrorMsg('All fields are required')
+      return
+    }else{setErrorMsg('')}
+    props.updateTasks(newTask,activeBoard);
+    props.taskModalStatus(false);
+  }
+   const handleTaskStatus=(id)=>{
+      setNewTask((prevTask)=>{
+          return {...prevTask, taskColumn:id}
+      })
+   }
+ 
   useEffect(()=>{
     if(createBoardModal===false){
       setErrorMsg('');
@@ -96,6 +190,37 @@ function Main(props) {
       });
     }
   },[createBoardModal])
+  
+  useEffect(()=>{
+    if(props.newTaskModal===false){
+      document.getElementById('select').value=-1;
+      setErrorMsg('');
+      setNewTask( {
+        taskName:'',
+        subtasks:[
+          {
+            subtaskName:'',
+            subtaskDone:false
+          },
+          {
+            subtaskName:'',
+            subtaskDone:false
+          },
+        ]
+      });
+    }
+  },[props.newTaskModal])
+
+  useEffect(()=>{
+    setCopyCurrentBoard(props.boards[activeBoard])
+  },[activeBoard])
+
+  useEffect(()=>{
+    setErrorMsg('')
+    if(editBoardModal===false){
+      setCopyCurrentBoard(props.boards[activeBoard])
+    }
+  },[editBoardModal])
 
 
   return (
@@ -130,8 +255,8 @@ function Main(props) {
         </div>
 
         <div id="columns" className="w-full flex p-4 gap-x-4 overflow-scroll bg-columnBg ">
-                {props.boards[activeBoard].columns.map((c,i)=>{
-                  return <div key={i}className="h-full min-w-[320px] w-fit pb-4 overflow-scroll px-3">
+                {props.boards[activeBoard].columns?.map((c,i)=>{
+                  return <div key={i}className="h-full min-w-[320px] max-w-[320px] w-fit pb-4 overflow-scroll px-3">
                       <p className="mb-8 font-bold text-asd text-xs tracking-widest">{`${c.columnName} (${c.tasks?.length>0 ? c.tasks?.length : "0"})`}</p>
                       <div className="flex flex-col gap-6">
                         {c.tasks?.map((t,i)=>{
@@ -143,7 +268,7 @@ function Main(props) {
                       </div>
                   </div>
                 })}
-                <div id="new-column" className=" text-asd hover:text-purple font-bold rounded-lg flex justify-center items-center bg-light-purple text-2xl h-full min-w-[300px] cursor-pointer">
+                <div onClick={()=>{setEditBoardModal(true)}} id="new-column" className=" text-asd hover:text-purple font-bold rounded-lg flex justify-center items-center bg-light-purple text-2xl h-full min-w-[300px] cursor-pointer">
                     <p>+ New Column</p>
                 </div>
         </div>
@@ -157,7 +282,7 @@ function Main(props) {
             </div>
             <div className="flex flex-col gap-2">
               <p className="font-bold text-asd text-xs tracking-widest">Board Columns</p>
-              {newBoard.columns.map((c,i)=>{
+              {newBoard.columns?.map((c,i)=>{
                 return <div className="flex items-center" key={i}>
                     <input type="text" value={c.columnName} onChange={(e)=>{handleColumnNameChange(i, e.target.value)}} className="placeholder:text-sm border-[1px] w-full p-2 rounded-md"/>
                     <img src={x} onClick={()=>{handleRemoveColumn(i)}} alt="" className="h-full ml-2 cursor-pointer"/>
@@ -166,7 +291,60 @@ function Main(props) {
             </div>
             <p className="text-red-600 font-bold">{errorMsg}</p>
             <button onClick={handleAddNewColumn} className="bg-purple text-white w-full py-2 rounded-full">+ Add New Column</button>
-            <button onClick={handleAddBoard} className="bg-purple text-white w-full py-2 rounded-full">Create New Column</button>
+            <button onClick={handleAddBoard} className="bg-purple text-white w-full py-2 rounded-full">Create New Board</button>
+          </div>   
+        </div>  
+
+        <div onClick={()=>{setEditBoardModal(false)}} id="new-board-modal" className={`${editBoardModal?'top-0 absolute h-screen w-screen flex items-center justify-center backdrop-brightness-50':'hidden'}`}>
+          <div onClick={stopPropagation} className="w-[480px] h-fit max-h-[700px] overflow-y-scroll overflow-x-hidden bg-white rounded-xl p-6 z-10 flex flex-col justify-between gap-y-2 hide-scroll">
+            <p className="font-bold text-lg">Edit board</p>
+            <div className="flex flex-col gap-2">
+              <p className="font-bold text-asd text-xs tracking-widest">Board name</p>
+              <input type="text" value={copyCurrentBoard.boardName} onChange={(e)=>{editBoardName(e.target.value)}} placeholder="e.g. Web design" className="border-[1px] w-full p-2 rounded-md"/>
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="font-bold text-asd text-xs tracking-widest">Board Columns</p>
+              {copyCurrentBoard.columns.map((c,i)=>{
+                return <div className="flex items-center" key={i}>
+                    <input type="text" value={c.columnName} onChange={(e)=>{handleColumnNameEdit(i, e.target.value)}} className="placeholder:text-sm border-[1px] w-full p-2 rounded-md"/>
+                    <img src={x} onClick={()=>{handleRemoveEditColumn(i)}} alt="" className="h-full ml-2 cursor-pointer"/>
+                </div>
+              })}
+            </div>
+            <p className="text-red-600 font-bold">{errorMsg}</p>
+            <button onClick={handleAddNewEditColumn} className="bg-purple text-white w-full py-2 rounded-full">+ Add New Column</button>
+            <button onClick={handleSaveEditBoard} className="bg-purple text-white w-full py-2 rounded-full">Save Changes</button>
+          </div>   
+        </div>  
+
+        <div onClick={()=>{props.taskModalStatus(false)}} id="new-board-modal" className={`${props.newTaskModal?'top-0 absolute h-screen w-screen flex items-center justify-center backdrop-brightness-50':'hidden'}`}>
+          <div onClick={stopPropagation} className="w-[480px] h-fit max-h-[700px] overflow-y-scroll overflow-x-hidden bg-white rounded-xl p-6 z-10 flex flex-col justify-between gap-y-2 hide-scroll">
+            <p className="font-bold text-lg">Add new task</p>
+            <div className="flex flex-col gap-2">
+              <p className="font-bold text-asd text-xs tracking-widest">Task name</p>
+              <input type="text" value={newTask.taskName} onChange={(e)=>{editNewTaskName(e.target.value)}} placeholder="e.g. Take coffee break" className="border-[1px] w-full p-2 rounded-md"/>
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="font-bold text-asd text-xs tracking-widest">Subtasks</p>
+              {newTask.subtasks.map((c,i)=>{
+                return <div className="flex items-center" key={i}>
+                    <input type="text" value={c.subtaskName} onChange={(e)=>{handleSubtaskNameEdit(i, e.target.value)}} className="placeholder:text-sm border-[1px] w-full p-2 rounded-md"/>
+                    <img src={x} onClick={()=>{handleRemoveSubtask(i)}} alt="" className="h-full ml-2 cursor-pointer"/>
+                </div>
+              })}
+            </div>
+            <button onClick={handleAddSubtask} className="bg-purple text-white w-full py-2 rounded-full">+ Add New Subtask</button>
+            <div className="flex flex-col gap-2">
+              <p className="font-bold text-asd text-xs tracking-widest">Current Status</p>
+              <select name="" id="select" className="border-[1px] w-full p-2 rounded-md cursor-pointer" onChange={(e)=>{handleTaskStatus(e.target.value)}}>
+                <option value={-1} hidden>Select status</option>
+                {copyCurrentBoard.columns.map((c,i)=>{
+                  return <option key={i} value={i} className="cursor-pointer">{c.columnName}</option>
+                })}
+              </select>
+            </div>
+            <p className="text-red-600 font-bold">{errorMsg}</p>
+            <button onClick={handleCreateTask} className="bg-purple text-white w-full py-2 rounded-full">Create Task</button>
           </div>   
         </div>  
         
