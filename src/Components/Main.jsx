@@ -7,16 +7,17 @@ import x from '../Assets/icon-cross.d4ca9e0d2a82f7ea4ae08238a42f84ed.svg'
 function Main(props) {
   const [newBoard, setNewBoard] = useState({
     boardName:"",
-      columns:[
-        {
-          columnName:'Todo',
-        },
-        {
-          columnName:'Doing',
-        },
-      ],
+    columns:[
+      {
+        columnName:'Todo',
+        tasks:[],
+      },
+      {
+        columnName:'Doing',
+        tasks:[],
+      },  
+    ]
   });
-
   const [newTask, setNewTask] = useState(
     {
       taskName:'',
@@ -81,7 +82,7 @@ function Main(props) {
   }
   const handleAddNewColumn=()=>{
     setNewBoard((prevBoard) => {
-      let updatedColumns = [...prevBoard.columns, {columnName:''}]
+      let updatedColumns = [...prevBoard.columns, {columnName:'', tasks:[]}]
       return { ...prevBoard, columns: updatedColumns};
     });
   }
@@ -125,7 +126,7 @@ function Main(props) {
   }
   const handleAddNewEditColumn=()=>{
     setCopyCurrentBoard((prevBoard) => {
-      let updatedColumns = [...prevBoard.columns, {columnName:''}]
+      let updatedColumns = [...prevBoard.columns, {columnName:'',tasks:[]}]
       return { ...prevBoard, columns: updatedColumns};
     });
   }
@@ -147,6 +148,7 @@ function Main(props) {
         return
       }else{setErrorMsg('')}
     } 
+    console.log(copyCurrentBoard)
     props.updateEditBoards(copyCurrentBoard,activeBoard);
     setEditBoardModal(false)
   }
@@ -182,9 +184,11 @@ function Main(props) {
           columns:[
             {
               columnName:'Todo',
+              tasks:[]
             },
             {
               columnName:'Doing',
+              tasks:[]
             },
           ],
       });
@@ -262,7 +266,7 @@ function Main(props) {
                         {c.tasks?.map((t,i)=>{
                           return <div key={i} className="cursor-pointer gap-y-2 bg-white p-4 rounded-xl flex flex-col w-full justify-center min-h-[100px] card-shadow">
                               <p className="font-bold">{t.taskName}</p>
-                              <p className="font-bold text-asd text-xs tracking-widest">1 of 3 subtasks</p>
+                              <p className="font-bold text-asd text-xs tracking-widest">{`${t.subtasks.filter((s)=>s.subtaskDone===true).length} of ${t.subtasks.length} subtasks`}</p>
                           </div>
                         })}
                       </div>

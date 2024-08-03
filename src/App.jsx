@@ -13,46 +13,199 @@ function App() {
           tasks:[
             {
               taskName:'Building UI for onboarding flow',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:true
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'Building UI for search',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'Build settings UI',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'QA and test all major users journeys',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'Building UI for onboarding flow',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'Building UI for search',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'Build settings UI',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'QA and test all major users journeys',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'Building UI for onboarding flow',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'Building UI for search',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'Build settings UI',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
             {
               taskName:'QA and test all major users journeys',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
             },
           ],
         },
         {
           columnName:'Doing',
           tasks:[
-            {taskName:'Research pricing points of various competitors and trial different business models'},
+            {
+              taskName:'Research pricing points of various competitors and trial different business models',
+              taskColumn:'',
+              subtasks:[
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+                {
+                  subtaskName:'',
+                  subtaskDone:false
+                },
+              ]
+            },
           ]
         },
         {
@@ -115,6 +268,7 @@ function App() {
   }
   const updateBoards=(newBoard)=>{
     let newBoards = [...boards, newBoard]
+    console.log(newBoards)
     setBoards(newBoards)
   }
   const updateEditBoards=(board,i)=>{
