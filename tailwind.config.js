@@ -8,6 +8,7 @@ module.exports = {
           'light-purple': '#E9EFFA',
           'asd': '#828FA3',
           'columnBg': '#F4F7FD',
+          'fadedPurple': '#D8D7F1',
       },
     },
   },

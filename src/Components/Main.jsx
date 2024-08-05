@@ -35,11 +35,16 @@ function Main(props) {
     }
   );
   const [activeBoard, setActiveBoard] = useState(0);
+  const [column, setColumn] = useState(0);
+  const [task, setTask] = useState(0);
   const [showSidebar, setSidebar] = useState(true);
   const [createBoardModal, setCreateBoardModal] = useState(false);
   const [editBoardModal, setEditBoardModal] = useState(false);
+  const [taskModal, setTaskModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [openTask, setOpenTask] = useState({taskName:'',taskColumn:'0',subtasks:[]});
   const [copyCurrentBoard, setCopyCurrentBoard] = useState(props.boards[activeBoard]);
+  
   
   const boardClick=(i)=>{
     setActiveBoard(i)
@@ -171,11 +176,35 @@ function Main(props) {
     props.taskModalStatus(false);
   }
    const handleTaskStatus=(id)=>{
-      setNewTask((prevTask)=>{
-          return {...prevTask, taskColumn:id}
-      })
+    setNewTask((prevTask)=>{
+      return {...prevTask, taskColumn:id}
+    }) 
    }
- 
+   const handleTaskModalStatus = (id) => {
+    setOpenTask((prevTask) => {
+      const updatedTask = { ...prevTask, taskColumn: id };
+      props.updateTasks(updatedTask, activeBoard);
+      return updatedTask;
+  });
+};
+
+   const openTaskModal=(task,i)=>{
+    setOpenTask(task)
+    setTask(i);
+    setTaskModal(true);
+    
+   }
+
+   const handleColumnClick=(i)=>{
+      setColumn(i);
+   }
+   const handleSubtaskToggle=(i)=>{
+    let openTaskCopy = { ...openTask };
+    openTaskCopy.subtasks[i].subtaskDone=!openTaskCopy.subtasks[i].subtaskDone;
+    setOpenTask(openTaskCopy);
+    props.updateSubtask(openTaskCopy, activeBoard, column, task);
+  };
+   
   useEffect(()=>{
     if(createBoardModal===false){
       setErrorMsg('');
@@ -225,6 +254,13 @@ function Main(props) {
       setCopyCurrentBoard(props.boards[activeBoard])
     }
   },[editBoardModal])
+  
+  useEffect(() => {
+    if (props.boards[activeBoard]?.columns[column]?.tasks[task]) {
+      setOpenTask(props.boards[activeBoard].columns[column].tasks[task]);
+    }
+ }, [props.boards, activeBoard, column, task]);
+
 
 
   return (
@@ -260,11 +296,11 @@ function Main(props) {
 
         <div id="columns" className="w-full flex p-4 gap-x-4 overflow-scroll bg-columnBg ">
                 {props.boards[activeBoard].columns?.map((c,i)=>{
-                  return <div key={i}className="h-full min-w-[320px] max-w-[320px] w-fit pb-4 overflow-scroll px-3">
+                  return <div onClick={()=>{handleColumnClick(i)}} key={i} className="h-full min-w-[320px] max-w-[320px] w-fit pb-4 overflow-scroll px-3">
                       <p className="mb-8 font-bold text-asd text-xs tracking-widest">{`${c.columnName} (${c.tasks?.length>0 ? c.tasks?.length : "0"})`}</p>
                       <div className="flex flex-col gap-6">
                         {c.tasks?.map((t,i)=>{
-                          return <div key={i} className="cursor-pointer gap-y-2 bg-white p-4 rounded-xl flex flex-col w-full justify-center min-h-[100px] card-shadow">
+                          return <div onClick={()=>{openTaskModal(t,i)}} key={i} className="cursor-pointer gap-y-2 bg-white p-4 rounded-xl flex flex-col w-full justify-center min-h-[100px] card-shadow">
                               <p className="font-bold">{t.taskName}</p>
                               <p className="font-bold text-asd text-xs tracking-widest">{`${t.subtasks.filter((s)=>s.subtaskDone===true).length} of ${t.subtasks.length} subtasks`}</p>
                           </div>
@@ -297,8 +333,7 @@ function Main(props) {
             <button onClick={handleAddNewColumn} className="bg-purple text-white w-full py-2 rounded-full">+ Add New Column</button>
             <button onClick={handleAddBoard} className="bg-purple text-white w-full py-2 rounded-full">Create New Board</button>
           </div>   
-        </div>  
-
+        </div>
         <div onClick={()=>{setEditBoardModal(false)}} id="new-board-modal" className={`${editBoardModal?'top-0 absolute h-screen w-screen flex items-center justify-center backdrop-brightness-50':'hidden'}`}>
           <div onClick={stopPropagation} className="w-[480px] h-fit max-h-[700px] overflow-y-scroll overflow-x-hidden bg-white rounded-xl p-6 z-10 flex flex-col justify-between gap-y-2 hide-scroll">
             <p className="font-bold text-lg">Edit board</p>
@@ -319,7 +354,7 @@ function Main(props) {
             <button onClick={handleAddNewEditColumn} className="bg-purple text-white w-full py-2 rounded-full">+ Add New Column</button>
             <button onClick={handleSaveEditBoard} className="bg-purple text-white w-full py-2 rounded-full">Save Changes</button>
           </div>   
-        </div>  
+        </div>   
 
         <div onClick={()=>{props.taskModalStatus(false)}} id="new-board-modal" className={`${props.newTaskModal?'top-0 absolute h-screen w-screen flex items-center justify-center backdrop-brightness-50':'hidden'}`}>
           <div onClick={stopPropagation} className="w-[480px] h-fit max-h-[700px] overflow-y-scroll overflow-x-hidden bg-white rounded-xl p-6 z-10 flex flex-col justify-between gap-y-2 hide-scroll">
@@ -351,8 +386,26 @@ function Main(props) {
             <button onClick={handleCreateTask} className="bg-purple text-white w-full py-2 rounded-full">Create Task</button>
           </div>   
         </div>  
-        
-    
+
+        <div onClick={()=>{setTaskModal(false)}} id="new-board-modal" className={`${taskModal?'top-0 absolute h-screen w-screen flex items-center justify-center backdrop-brightness-50':'hidden'}`}>
+          <div onClick={stopPropagation} className="w-[480px] h-fit max-h-[700px] overflow-y-scroll overflow-x-hidden bg-white rounded-xl p-6 z-10 flex flex-col justify-between gap-y-6 hide-scroll">
+            <p className="font-bold text-lg">{openTask.taskName}</p>
+            <p className="font-bold text-asd text-xs tracking-widest">{`Subtasks (${openTask.subtasks?.filter((s)=>s.subtaskDone===true).length}  of ${openTask.subtasks?.length})`}</p>
+            <div className="flex flex-col gap-y-2 ite">
+              {openTask.subtasks?.map((t,i)=>{
+                return <div key={i} onClick={()=>{handleSubtaskToggle(i)}} className="flex items-center gap-x-2 bg-columnBg cursor-pointer p-2 rounded-md min-h-[40px] hover:bg-fadedPurple">
+                    {/* <input type="checkbox" defaultChecked={t.subtaskDone}/> */}
+                    <p className={`font-semibold text-sm ${t.subtaskDone?'text-gray-400 line-through':''}`}>{t.subtaskName}</p>
+                </div>
+              })}
+            </div>
+            <p className="font-bold text-asd text-xs tracking-widest">Current Status</p>
+            <select value={openTask.taskColumn} name="" id="select" className="border-[1px] w-full p-2 rounded-md cursor-pointer" onChange={(e)=>{handleTaskModalStatus(e.target.value)}}>
+                {copyCurrentBoard.columns.map((c,i)=>{
+                  return <option key={i} value={i} className="cursor-pointer">{c.columnName}</option>})}
+            </select>
+          </div>   
+        </div>  
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Header from './Components/Header';
 import Main from './Components/Main';
@@ -13,21 +13,21 @@ function App() {
           tasks:[
             {
               taskName:'Building UI for onboarding flow',
-              taskColumn:'',
+              taskColumn:'0',
               subtasks:[
                 {
-                  subtaskName:'',
+                  subtaskName:'Subtask 1',
                   subtaskDone:true
                 },
                 {
-                  subtaskName:'',
+                  subtaskName:'Subtask 2',
                   subtaskDone:false
                 },
               ]
             },
             {
               taskName:'Building UI for search',
-              taskColumn:'',
+              taskColumn:'0',
               subtasks:[
                 {
                   subtaskName:'',
@@ -49,7 +49,7 @@ function App() {
             },
             {
               taskName:'Build settings UI',
-              taskColumn:'',
+              taskColumn:'0',
               subtasks:[
                 {
                   subtaskName:'',
@@ -63,7 +63,7 @@ function App() {
             },
             {
               taskName:'QA and test all major users journeys',
-              taskColumn:'',
+              taskColumn:'0',
               subtasks:[
                 {
                   subtaskName:'',
@@ -77,7 +77,7 @@ function App() {
             },
             {
               taskName:'Building UI for onboarding flow',
-              taskColumn:'',
+              taskColumn:'0',
               subtasks:[
                 {
                   subtaskName:'',
@@ -91,7 +91,7 @@ function App() {
             },
             {
               taskName:'Building UI for search',
-              taskColumn:'',
+              taskColumn:'0',
               subtasks:[
                 {
                   subtaskName:'',
@@ -105,7 +105,7 @@ function App() {
             },
             {
               taskName:'Build settings UI',
-              taskColumn:'',
+              taskColumn:'0',
               subtasks:[
                 {
                   subtaskName:'',
@@ -119,7 +119,7 @@ function App() {
             },
             {
               taskName:'QA and test all major users journeys',
-              taskColumn:'',
+              taskColumn:'0',
               subtasks:[
                 {
                   subtaskName:'',
@@ -133,49 +133,7 @@ function App() {
             },
             {
               taskName:'Building UI for onboarding flow',
-              taskColumn:'',
-              subtasks:[
-                {
-                  subtaskName:'',
-                  subtaskDone:false
-                },
-                {
-                  subtaskName:'',
-                  subtaskDone:false
-                },
-              ]
-            },
-            {
-              taskName:'Building UI for search',
-              taskColumn:'',
-              subtasks:[
-                {
-                  subtaskName:'',
-                  subtaskDone:false
-                },
-                {
-                  subtaskName:'',
-                  subtaskDone:false
-                },
-              ]
-            },
-            {
-              taskName:'Build settings UI',
-              taskColumn:'',
-              subtasks:[
-                {
-                  subtaskName:'',
-                  subtaskDone:false
-                },
-                {
-                  subtaskName:'',
-                  subtaskDone:false
-                },
-              ]
-            },
-            {
-              taskName:'QA and test all major users journeys',
-              taskColumn:'',
+              taskColumn:'0',
               subtasks:[
                 {
                   subtaskName:'',
@@ -194,7 +152,7 @@ function App() {
           tasks:[
             {
               taskName:'Research pricing points of various competitors and trial different business models',
-              taskColumn:'',
+              taskColumn:'1',
               subtasks:[
                 {
                   subtaskName:'',
@@ -207,18 +165,6 @@ function App() {
               ]
             },
           ]
-        },
-        {
-          columnName:'Done',
-          tasks:[],
-        },
-        {
-          columnName:'Todo',
-          tasks:[],
-        },
-        {
-          columnName:'Doing',
-          tasks:[],
         },
         {
           columnName:'Done',
@@ -279,10 +225,16 @@ function App() {
   const updateTasks=(task,i)=>{
     console.log(task)
     let updatedBoards = boards;
-    boards[i].columns[task.taskColumn].tasks.push(task)
+    boards[i].columns[task.taskColumn].tasks?.push(task)
     console.log(updatedBoards)
     setBoards(updatedBoards);
   }
+  const updateSubtask = (task, activeBoard, column, taskIdx) => {
+    let copyBoards = [...boards];
+    copyBoards[activeBoard].columns[column].tasks[taskIdx] = task;
+    setBoards(copyBoards);
+  };
+
   const taskModalStatus=(state)=>{
     setNewTaskModal(state);
   }
@@ -298,6 +250,7 @@ function App() {
         newTaskModal={newTaskModal}
         taskModalStatus={taskModalStatus}
         updateTasks={updateTasks}
+        updateSubtask={updateSubtask}
       />
     </div>
   );
