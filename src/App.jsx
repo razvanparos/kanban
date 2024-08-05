@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Header from './Components/Header';
 import Main from './Components/Main';
@@ -6,8 +6,14 @@ import taskData from './tasks.json'
 
 function App() {
   const [boards, setBoards] = useState(taskData);
-  const [board, setBoard] = useState(boards[0].boardName)
+  const [board, setBoard] = useState(()=>{
+    if(boards.length!=0){
+      return boards[0].boardName
+    }else return "";
+  })
   const [newTaskModal, setNewTaskModal] = useState(false);
+  const [editBoardModal, setEditBoardModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const switchBoard=(i)=>{
     setBoard(boards[i].boardName)
   }
@@ -37,10 +43,37 @@ function App() {
   const taskModalStatus=(state)=>{
     setNewTaskModal(state);
   }
+  
+  const removeTask=(activeBoard,column,task)=>{
+    let copyBoards = [...boards];
+    let updateColumn = copyBoards[activeBoard].columns[column].tasks.filter((t,i)=>i!=task)
+    copyBoards[activeBoard].columns[column].tasks=updateColumn
+    setBoards(copyBoards)
+  }
+
+  const handleOpenEdit=(state)=>{
+    setEditBoardModal(state)
+  }
+  const handleOpenDelete=(state)=>{
+    setShowDeleteModal(state)
+  }
+  const handleDeleteBoard=(activeBoard)=>{
+    setShowDeleteModal(false)
+    let copyBoards = [...boards];
+    let updateBoards = copyBoards.filter((b,i)=>i!=activeBoard)
+    console.log(updateBoards)
+    setBoards(updateBoards)
+  }
+
+  useEffect(()=>{
+    if(boards.length===0){
+      setBoard('')
+    }
+  },[boards])
 
   return (
     <div className="App h-full">
-      <Header board={board} taskModalStatus={taskModalStatus}/>
+      <Header board={board} taskModalStatus={taskModalStatus} handleOpenEdit={handleOpenEdit} handleOpenDelete={handleOpenDelete}/>
       <Main 
         boards={boards} 
         switchBoard={switchBoard} 
@@ -50,6 +83,12 @@ function App() {
         taskModalStatus={taskModalStatus}
         updateTasks={updateTasks}
         updateSubtask={updateSubtask}
+        removeTask={removeTask}
+        handleOpenEdit={handleOpenEdit}
+        editBoardModal={editBoardModal}
+        showDeleteModal={showDeleteModal}
+        handleOpenDelete={handleOpenDelete}
+        handleDeleteBoard={handleDeleteBoard}
       />
     </div>
   );

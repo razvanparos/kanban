@@ -1,19 +1,33 @@
 import logo from "../Assets/logo-mobile.e60c2fbc3dcefa4256e0569ffba5e523.svg"
 import dots from "../Assets/icon-vertical-ellipsis.5c8996197d4a9dd7a7adfa20ce4abef9.svg"
+import { useState } from "react";
 function Header(props) {
+  const [boardDropdown, setBoardDropdown]=useState(false)
+  const handleOpenEdit=()=>{
+    setBoardDropdown(false)
+    props.handleOpenEdit(true)
+  }
+  const handleOpenDelete=()=>{
+    setBoardDropdown(false)
+    props.handleOpenDelete(true)
+  }
   return (
-    <div className="min-h-20 flex items-center px-6 justify-between">
+    <div className="min-h-20 flex items-center px-6 justify-between relative">
         <div className="flex items-center">
             <img src={logo} alt="" className="pr-4"/>
             <p className="text-3xl font-bold">kanban</p>
         </div>
         <div className="w-5/6 flex justify-between items-center">
             <p className="text-xl font-bold">{props.board}</p>
-            <div className="flex gap-x-6 items-center">
+            <div className="flex gap-x-6 items-center ">
                 <button className="bg-purple 
                  text-white p-3 rounded-full font-semibold 
                  px-6 hover:opacity-75 duration-300" onClick={()=>{props.taskModalStatus(true)}}>+ Add New Task</button>
-                <img src={dots} alt="" className="h-full cursor-pointer"/>
+                <img onClick={()=>{setBoardDropdown(!boardDropdown)}} src={dots} alt="" className="h-full cursor-pointer"/>
+                <div className={`bg-white gap-y-4 flex flex-col items-start rounded-xl duration-300 absolute p-4 shadow-xl bottom-0 translate-y-full ${boardDropdown? ' ':' overflow-hidden opacity-0 pointer-events-none'}`}>
+                  <button onClick={handleOpenEdit} className="text-md">Edit board</button>
+                  <button onClick={handleOpenDelete} className="text-md text-red-600">Delete board</button>
+                </div>
             </div>
         </div>
     </div>

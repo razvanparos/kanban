@@ -39,7 +39,6 @@ function Main(props) {
   const [task, setTask] = useState(0);
   const [showSidebar, setSidebar] = useState(true);
   const [createBoardModal, setCreateBoardModal] = useState(false);
-  const [editBoardModal, setEditBoardModal] = useState(false);
   const [taskModal, setTaskModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [openTask, setOpenTask] = useState({taskName:'',taskColumn:'0',subtasks:[]});
@@ -155,7 +154,7 @@ function Main(props) {
     } 
     console.log(copyCurrentBoard)
     props.updateEditBoards(copyCurrentBoard,activeBoard);
-    setEditBoardModal(false)
+    props.handleOpenEdit(false)
   }
   const handleCreateTask=()=>{
     if(newTask.taskName===''){
@@ -183,9 +182,11 @@ function Main(props) {
    const handleTaskModalStatus = (id) => {
     setOpenTask((prevTask) => {
       const updatedTask = { ...prevTask, taskColumn: id };
+      props.removeTask(activeBoard,column,task)
       props.updateTasks(updatedTask, activeBoard);
       return updatedTask;
-  });
+    });
+    setTaskModal(false)
 };
 
    const openTaskModal=(task,i)=>{
@@ -249,22 +250,31 @@ function Main(props) {
   },[activeBoard])
 
   useEffect(()=>{
+    setCopyCurrentBoard(props.boards[0])
+  },[props.boards])
+
+  useEffect(()=>{
     setErrorMsg('')
-    if(editBoardModal===false){
+    if(props.editBoardModal===false){
       setCopyCurrentBoard(props.boards[activeBoard])
     }
-  },[editBoardModal])
+  },[props.editBoardModal])
   
   useEffect(() => {
     if (props.boards[activeBoard]?.columns[column]?.tasks[task]) {
       setOpenTask(props.boards[activeBoard].columns[column].tasks[task]);
     }
  }, [props.boards, activeBoard, column, task]);
+  
+ const handleConfirmDelete=()=>{
+  props.handleDeleteBoard(activeBoard)
+  setActiveBoard(0)
+ }
 
 
 
   return (
-    <div className="flex" style={{height:'91.2%'}}>
+    <div className={`flex`} style={{height:'91.2%'}}>
         <div id="sidebar" className={`duration-500 ${showSidebar?'relative w-[270px] h-full pb-8':'w-0 overflow-hidden h-full pb-8'}`}>
           <div className="flex flex-col h-full justify-between">
             <div>
@@ -295,7 +305,7 @@ function Main(props) {
         </div>
 
         <div id="columns" className="w-full flex p-4 gap-x-4 overflow-scroll bg-columnBg ">
-                {props.boards[activeBoard].columns?.map((c,i)=>{
+                {props.boards[activeBoard]?.columns?.map((c,i)=>{
                   return <div onClick={()=>{handleColumnClick(i)}} key={i} className="h-full min-w-[320px] max-w-[320px] w-fit pb-4 overflow-scroll px-3">
                       <p className="mb-8 font-bold text-asd text-xs tracking-widest">{`${c.columnName} (${c.tasks?.length>0 ? c.tasks?.length : "0"})`}</p>
                       <div className="flex flex-col gap-6">
@@ -308,9 +318,11 @@ function Main(props) {
                       </div>
                   </div>
                 })}
-                <div onClick={()=>{setEditBoardModal(true)}} id="new-column" className=" text-asd hover:text-purple font-bold rounded-lg flex justify-center items-center bg-light-purple text-2xl h-full min-w-[300px] cursor-pointer">
+                {
+                  props.boards.length>0? <div onClick={()=>{props.handleOpenEdit(true)}} id="new-column" className=" text-asd hover:text-purple font-bold rounded-lg flex justify-center items-center bg-light-purple text-2xl h-full min-w-[300px] cursor-pointer">
                     <p>+ New Column</p>
-                </div>
+                  </div>:''
+                }
         </div>
 
         <div onClick={()=>{setCreateBoardModal(false)}} id="new-board-modal" className={`${createBoardModal?'top-0 absolute h-screen w-screen flex items-center justify-center backdrop-brightness-50':'hidden'}`}>
@@ -334,16 +346,17 @@ function Main(props) {
             <button onClick={handleAddBoard} className="bg-purple text-white w-full py-2 rounded-full">Create New Board</button>
           </div>   
         </div>
-        <div onClick={()=>{setEditBoardModal(false)}} id="new-board-modal" className={`${editBoardModal?'top-0 absolute h-screen w-screen flex items-center justify-center backdrop-brightness-50':'hidden'}`}>
+        
+        <div onClick={()=>{props.handleOpenEdit(false)}} id="new-board-modal" className={`${props.editBoardModal?'top-0 absolute h-screen w-screen flex items-center justify-center backdrop-brightness-50':'hidden'}`}>
           <div onClick={stopPropagation} className="w-[480px] h-fit max-h-[700px] overflow-y-scroll overflow-x-hidden bg-white rounded-xl p-6 z-10 flex flex-col justify-between gap-y-2 hide-scroll">
             <p className="font-bold text-lg">Edit board</p>
             <div className="flex flex-col gap-2">
               <p className="font-bold text-asd text-xs tracking-widest">Board name</p>
-              <input type="text" value={copyCurrentBoard.boardName} onChange={(e)=>{editBoardName(e.target.value)}} placeholder="e.g. Web design" className="border-[1px] w-full p-2 rounded-md"/>
+              <input type="text" value={copyCurrentBoard?.boardName} onChange={(e)=>{editBoardName(e.target.value)}} placeholder="e.g. Web design" className="border-[1px] w-full p-2 rounded-md"/>
             </div>
             <div className="flex flex-col gap-2">
               <p className="font-bold text-asd text-xs tracking-widest">Board Columns</p>
-              {copyCurrentBoard.columns.map((c,i)=>{
+              {copyCurrentBoard?.columns.map((c,i)=>{
                 return <div className="flex items-center" key={i}>
                     <input type="text" value={c.columnName} onChange={(e)=>{handleColumnNameEdit(i, e.target.value)}} className="placeholder:text-sm border-[1px] w-full p-2 rounded-md"/>
                     <img src={x} onClick={()=>{handleRemoveEditColumn(i)}} alt="" className="h-full ml-2 cursor-pointer"/>
@@ -377,7 +390,7 @@ function Main(props) {
               <p className="font-bold text-asd text-xs tracking-widest">Current Status</p>
               <select name="" id="select" className="border-[1px] w-full p-2 rounded-md cursor-pointer" onChange={(e)=>{handleTaskStatus(e.target.value)}}>
                 <option value={-1} hidden>Select status</option>
-                {copyCurrentBoard.columns.map((c,i)=>{
+                {copyCurrentBoard?.columns.map((c,i)=>{
                   return <option key={i} value={i} className="cursor-pointer">{c.columnName}</option>
                 })}
               </select>
@@ -391,7 +404,7 @@ function Main(props) {
           <div onClick={stopPropagation} className="w-[480px] h-fit max-h-[700px] overflow-y-scroll overflow-x-hidden bg-white rounded-xl p-6 z-10 flex flex-col justify-between gap-y-6 hide-scroll">
             <p className="font-bold text-lg">{openTask.taskName}</p>
             <p className="font-bold text-asd text-xs tracking-widest">{`Subtasks (${openTask.subtasks?.filter((s)=>s.subtaskDone===true).length}  of ${openTask.subtasks?.length})`}</p>
-            <div className="flex flex-col gap-y-2 ite">
+            <div className="flex flex-col gap-y-2">
               {openTask.subtasks?.map((t,i)=>{
                 return <div key={i} onClick={()=>{handleSubtaskToggle(i)}} className="flex items-center gap-x-2 bg-columnBg cursor-pointer p-2 rounded-md min-h-[40px] hover:bg-fadedPurple">
                     {/* <input type="checkbox" defaultChecked={t.subtaskDone}/> */}
@@ -401,11 +414,23 @@ function Main(props) {
             </div>
             <p className="font-bold text-asd text-xs tracking-widest">Current Status</p>
             <select value={openTask.taskColumn} name="" id="select" className="border-[1px] w-full p-2 rounded-md cursor-pointer" onChange={(e)=>{handleTaskModalStatus(e.target.value)}}>
-                {copyCurrentBoard.columns.map((c,i)=>{
+                {copyCurrentBoard?.columns.map((c,i)=>{
                   return <option key={i} value={i} className="cursor-pointer">{c.columnName}</option>})}
             </select>
           </div>   
         </div>  
+
+        <div onClick={()=>{props.handleOpenDelete(false)}} id="new-board-modal" className={`${props.showDeleteModal?'top-0 absolute h-screen w-screen flex items-center justify-center backdrop-brightness-50':'hidden'}`}>
+          <div onClick={stopPropagation} className="w-[480px] h-fit max-h-[700px] overflow-y-scroll overflow-x-hidden bg-white rounded-xl p-8 z-10 flex flex-col justify-between gap-y-6 hide-scroll">
+            <p className="font-bold text-lg text-red-500">Delete this board?</p>
+            <p className="text-sm text-asd font-medium">Are you sure you want to delete the "{props.boards[activeBoard]?.boardName}" board? This action will remove all columns and tasks and cannot be reversed.</p>
+            <div className="w-full flex justify-between gap-x-6">
+              <button onClick={handleConfirmDelete} className="bg-red-500 text-white p-2 w-full rounded-full font-bold">Delete</button>
+              <button onClick={()=>{props.handleOpenDelete(false)}} className="font-bold w-full bg-light-purple text-purple rounded-full">Cancel</button>
+            </div>
+          </div>   
+        </div>  
+
     </div>
   );
 }
