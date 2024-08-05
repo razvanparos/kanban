@@ -300,7 +300,7 @@ function Main(props) {
                       <p className="mb-8 font-bold text-asd text-xs tracking-widest">{`${c.columnName} (${c.tasks?.length>0 ? c.tasks?.length : "0"})`}</p>
                       <div className="flex flex-col gap-6">
                         {c.tasks?.map((t,i)=>{
-                          return <div onClick={()=>{openTaskModal(t,i)}} key={i} className="cursor-pointer gap-y-2 bg-white p-4 rounded-xl flex flex-col w-full justify-center min-h-[100px] card-shadow">
+                          return <div onClick={()=>{openTaskModal(t,i)}} key={i} className="cursor-pointer gap-y-2 bg-white p-4 rounded-xl flex flex-col w-full justify-center min-h-[88px] card-shadow">
                               <p className="font-bold">{t.taskName}</p>
                               <p className="font-bold text-asd text-xs tracking-widest">{`${t.subtasks.filter((s)=>s.subtaskDone===true).length} of ${t.subtasks.length} subtasks`}</p>
                           </div>

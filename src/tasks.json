@@ -1,0 +1,290 @@
+[
+    {
+      "boardName": "Platform Launch",
+      "columns": [
+        {
+          "columnName": "Todo",
+          "tasks": [
+            {
+              "taskName": "Building UI for onboarding flow",
+              "taskColumn": "0",
+              "subtasks": [
+                {
+                  "subtaskName": "Sign up page",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Sign in page",
+                  "subtaskDone": false
+                },
+                {
+                  "subtaskName": "Welcome page",
+                  "subtaskDone": false
+                }
+              ]
+            },
+            {
+              "taskName": "Building UI for search",
+              "taskColumn": "0",
+              "subtasks": [
+                {
+                  "subtaskName": "Search page",
+                  "subtaskDone": false
+                }
+              ]
+            },
+            {
+              "taskName": "Build settings UI",
+              "taskColumn": "0",
+              "subtasks": [
+                {
+                  "subtaskName": "Account page",
+                  "subtaskDone": false
+                },
+                {
+                  "subtaskName": "Billing page",
+                  "subtaskDone": false
+                }
+              ]
+            },
+            {
+              "taskName": "QA and test all major users journeys",
+              "taskColumn": "0",
+              "subtasks": [
+                {
+                  "subtaskName": "Internal testing",
+                  "subtaskDone": false
+                },
+                {
+                  "subtaskName": "External testing",
+                  "subtaskDone": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "columnName": "Doing",
+          "tasks": [
+            {
+              "taskName": "Design settings and search pages",
+              "taskColumn": "1",
+              "subtasks": [
+                {
+                  "subtaskName": "Settings - Account page",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Settings - Billing page",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Search page",
+                  "subtaskDone": false
+                }
+              ]
+            },
+            {
+              "taskName": "Add account management endpoints",
+              "taskColumn": "1",
+              "subtasks": [
+                {
+                  "subtaskName": "Upgrade plan",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Cancel plan",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Update payment method",
+                  "subtaskDone": false
+                }
+              ]
+            },
+            {
+              "taskName": "Design onboarding flow",
+              "taskColumn": "1",
+              "subtasks": [
+                {
+                  "subtaskName": "Sign up page",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Sign in page",
+                  "subtaskDone": false
+                }
+              ]
+            },
+            {
+              "taskName": "Add search endpoints",
+              "taskColumn": "1",
+              "subtasks": [
+                {
+                  "subtaskName": "Add search endpoint",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Define search filters",
+                  "subtaskDone": false
+                }
+              ]
+            },
+            {
+              "taskName": "Add authentication endpoints",
+              "taskColumn": "1",
+              "subtasks": [
+                {
+                  "subtaskName": "Define user model",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Add auth endpoints",
+                  "subtaskDone": false
+                }
+              ]
+            },
+            {
+              "taskName": "Research pricing points of various competitors and trial different business models",
+              "taskColumn": "1",
+              "subtasks": [
+                {
+                  "subtaskName": "Research competitor pricing and business models",
+                  "subtaskDone": false
+                },
+                {
+                  "subtaskName": "Outline a business model that work for our solution",
+                  "subtaskDone": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "columnName": "Done",
+          "tasks": [
+            {
+              "taskName": "Conduct 5 wireframe tests",
+              "taskColumn": "2",
+              "subtasks": [
+                {
+                  "subtaskName": "Complete 5 wireframe prototype tests",
+                  "subtaskDone": true
+                }
+              ]
+            },
+            {
+              "taskName": "Conduct wireframe prototype",
+              "taskColumn": "2",
+              "subtasks": [
+                {
+                  "subtaskName": "Create clickable wireframe prototype in Balsamiq",
+                  "subtaskDone": true
+                }
+              ]
+            },
+            {
+              "taskName": "Review results of usability tests and iterate",
+              "taskColumn": "2",
+              "subtasks": [
+                {
+                  "subtaskName": "Meet to review notes from previous tests and plan changes",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Make changes to paper prototypes",
+                  "subtaskDone": true
+                }
+              ]
+            },
+            {
+              "taskName": "Create paper prototypes and conduct 10 usability tests with potential customers",
+              "taskColumn": "2",
+              "subtasks": [
+                {
+                  "subtaskName": "Create paper prototypes for version one",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Complete 10 usability tests",
+                  "subtaskDone": true
+                }
+              ]
+            },
+            {
+              "taskName": "Market discovery",
+              "taskColumn": "2",
+              "subtasks": [
+                {
+                  "subtaskName": "Interview 10 prospective customers",
+                  "subtaskDone": true
+                }
+              ]
+            },
+            {
+              "taskName": "Competitor analysis",
+              "taskColumn": "2",
+              "subtasks": [
+                {
+                  "subtaskName": "Find direct and indirect competitors",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "SWOT analysis for each competitor",
+                  "subtaskDone": true
+                }
+              ]
+            },
+            {
+              "taskName": "Research the market",
+              "taskColumn": "2",
+              "subtasks": [
+                {
+                  "subtaskName": "Write up research analysis",
+                  "subtaskDone": true
+                },
+                {
+                  "subtaskName": "Calculate TAM",
+                  "subtaskDone": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boardName": "Marketing Plan",
+      "columns": [
+        {
+          "columnName": "Todo",
+          "tasks": []
+        },
+        {
+          "columnName": "Doing",
+          "tasks": []
+        },
+        {
+          "columnName": "Done",
+          "tasks": []
+        }
+      ]
+    },
+    {
+      "boardName": "Roadmap",
+      "columns": [
+        {
+          "columnName": "Todo",
+          "tasks": []
+        },
+        {
+          "columnName": "Doing",
+          "tasks": []
+        },
+        {
+          "columnName": "Done",
+          "tasks": []
+        }
+      ]
+    }
+  ]
