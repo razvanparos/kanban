@@ -41,6 +41,8 @@ function Main(props) {
   const [createBoardModal, setCreateBoardModal] = useState(false);
   const [taskModal, setTaskModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [targetColumn, setTargetColumn] = useState();
+  const [draggedCard, setDraggedCard] = useState();
   const [openTask, setOpenTask] = useState({taskName:'',taskColumn:'0',subtasks:[]});
   const [copyCurrentBoard, setCopyCurrentBoard] = useState(props.boards[activeBoard]);
   
@@ -248,10 +250,11 @@ function Main(props) {
   useEffect(()=>{
     setCopyCurrentBoard(props.boards[activeBoard])
   },[activeBoard])
-
+  
   useEffect(()=>{
-    setCopyCurrentBoard(props.boards[0])
+    setCopyCurrentBoard(props.boards[activeBoard])
   },[props.boards])
+
 
   useEffect(()=>{
     setErrorMsg('')
@@ -269,6 +272,20 @@ function Main(props) {
  const handleConfirmDelete=()=>{
   props.handleDeleteBoard(activeBoard)
   setActiveBoard(0)
+ }
+ const dragOverColumn=(e,i)=>{
+   e.preventDefault();
+   setTargetColumn(i);
+ }
+
+ const dragCardStart=(i)=>{
+    setDraggedCard(i)
+    
+ }
+ const onCardDrop=(target)=>{
+  props.updateDragTasks(props.boards[activeBoard].columns[column].tasks[draggedCard], activeBoard, target);
+  props.removeTask(activeBoard,column,draggedCard)
+
  }
 
 
@@ -306,11 +323,11 @@ function Main(props) {
 
         <div id="columns" className="w-full flex p-4 gap-x-4 overflow-scroll bg-columnBg ">
                 {props.boards[activeBoard]?.columns?.map((c,i)=>{
-                  return <div onClick={()=>{handleColumnClick(i)}} key={i} className="h-full min-w-[320px] max-w-[320px] w-fit pb-4 overflow-scroll px-3">
+                  return <div onDrop={()=>{onCardDrop(targetColumn)}} onDragOver={(e)=>{dragOverColumn(e,i)}}  onMouseOver={()=>{handleColumnClick(i)}} key={i} className="h-full min-w-[320px] max-w-[320px] w-fit pb-4 overflow-scroll px-3">
                       <p className="mb-8 font-bold text-asd text-xs tracking-widest">{`${c.columnName} (${c.tasks?.length>0 ? c.tasks?.length : "0"})`}</p>
                       <div className="flex flex-col gap-6">
                         {c.tasks?.map((t,i)=>{
-                          return <div onClick={()=>{openTaskModal(t,i)}} key={i} className="cursor-pointer gap-y-2 bg-white p-4 rounded-xl flex flex-col w-full justify-center min-h-[88px] card-shadow">
+                          return <div draggable={true} onDragStart={()=>{dragCardStart(i,column)}} onClick={()=>{openTaskModal(t,i)}} key={i} className="cursor-pointer gap-y-2 bg-white p-4 rounded-xl flex flex-col w-full justify-center min-h-[88px] card-shadow">
                               <p className="font-bold">{t.taskName}</p>
                               <p className="font-bold text-asd text-xs tracking-widest">{`${t.subtasks.filter((s)=>s.subtaskDone===true).length} of ${t.subtasks.length} subtasks`}</p>
                           </div>

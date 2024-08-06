@@ -19,10 +19,8 @@ function Header(props) {
         </div>
         <div className="w-5/6 flex justify-between items-center">
             <p className="text-xl font-bold">{props.board}</p>
-            <div className="flex gap-x-6 items-center ">
-                <button className="bg-purple 
-                 text-white p-3 rounded-full font-semibold 
-                 px-6 hover:opacity-75 duration-300" onClick={()=>{props.taskModalStatus(true)}}>+ Add New Task</button>
+            <div className={`${props.addNewTaskButton?'flex gap-x-6 items-center':'hidden'}`}>
+                <button className={`bg-purple text-white p-3 rounded-full font-semibold px-6 hover:opacity-75 duration-300`} onClick={()=>{props.taskModalStatus(true)}}>+ Add New Task</button>
                 <img onClick={()=>{setBoardDropdown(!boardDropdown)}} src={dots} alt="" className="h-full cursor-pointer"/>
                 <div className={`bg-white gap-y-4 flex flex-col items-start rounded-xl duration-300 absolute p-4 shadow-xl bottom-0 translate-y-full ${boardDropdown? ' ':' overflow-hidden opacity-0 pointer-events-none'}`}>
                   <button onClick={handleOpenEdit} className="text-md">Edit board</button>

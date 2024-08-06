@@ -14,6 +14,7 @@ function App() {
   const [newTaskModal, setNewTaskModal] = useState(false);
   const [editBoardModal, setEditBoardModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [addNewTaskButton, setAddNewTaskButton] = useState(true);
   const switchBoard=(i)=>{
     setBoard(boards[i].boardName)
   }
@@ -28,10 +29,13 @@ function App() {
     setBoards(updatedBoards);
   }
   const updateTasks=(task,i)=>{
-    console.log(task)
     let updatedBoards = boards;
     boards[i].columns[task.taskColumn].tasks?.push(task)
-    console.log(updatedBoards)
+    setBoards(updatedBoards);
+  }
+  const updateDragTasks=(task,i,target)=>{
+    let updatedBoards = boards;
+    boards[i].columns[target].tasks?.push(task)
     setBoards(updatedBoards);
   }
   const updateSubtask = (task, activeBoard, column, taskIdx) => {
@@ -68,12 +72,19 @@ function App() {
   useEffect(()=>{
     if(boards.length===0){
       setBoard('')
+      setAddNewTaskButton(false)
     }
   },[boards])
 
   return (
     <div className="App h-full">
-      <Header board={board} taskModalStatus={taskModalStatus} handleOpenEdit={handleOpenEdit} handleOpenDelete={handleOpenDelete}/>
+      <Header
+        board={board} 
+        taskModalStatus={taskModalStatus} 
+        handleOpenEdit={handleOpenEdit} 
+        handleOpenDelete={handleOpenDelete}
+        addNewTaskButton={addNewTaskButton}
+       />
       <Main 
         boards={boards} 
         switchBoard={switchBoard} 
@@ -89,6 +100,7 @@ function App() {
         showDeleteModal={showDeleteModal}
         handleOpenDelete={handleOpenDelete}
         handleDeleteBoard={handleDeleteBoard}
+        updateDragTasks={updateDragTasks}
       />
     </div>
   );
