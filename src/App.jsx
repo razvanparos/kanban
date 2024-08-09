@@ -73,6 +73,9 @@ function App() {
     if(boards.length===0){
       setBoard('')
       setAddNewTaskButton(false)
+    }else {
+      setBoard(boards[0].boardName)
+      setAddNewTaskButton(true)
     }
   },[boards])
 
