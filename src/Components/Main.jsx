@@ -292,7 +292,7 @@ function Main(props) {
 
   return (
     <div className={`flex`} style={{height:'91.2%'}}>
-        <div id="sidebar" className={`duration-500 ${showSidebar?'relative w-[270px] h-full pb-8':'w-0 overflow-hidden h-full pb-8'}`}>
+        <div id="sidebar" className={`duration-500 ${showSidebar?'hidden md:block relative w-[270px] h-full pb-8':'w-0 overflow-hidden h-full pb-8'}`}>
           <div className="flex flex-col h-full justify-between">
             <div>
               <p className="text-gray-500 text-sm tracking-widest font-bold p-4 w-[200px]">{`ALL BOARDS (${props.boards?.length})`}</p>
